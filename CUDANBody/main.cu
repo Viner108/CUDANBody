@@ -46,7 +46,7 @@ int comparisonGPUAndCPU() {
 	cudaEventCreate(&stop);
 	cudaEventCreate(&stop1);
 
-	int N = 10240; //число частиц
+	int N = 20480; //число частиц
 	int NT = 10; // число шагов
 	float tau = 0.001f; // шаг по времени 0.001 с
 
@@ -105,7 +105,7 @@ int comparisonGPUAndCPU() {
 	cudaEventRecord(start, 0);
 
 	for (int j = 0; j < NT; j++) {
-		Acceleration_GPU << < N_blocks, N_thread >> > (dX, dY, dAX, dAY, j, N);
+		Acceleration_GPU << < N_blocks, N_thread >> > (dX, dY, dAX, dAY, j, N,N_blocks);
 		Position_GPU << < N_blocks, N_thread >> > (dX, dY, dVX, dVY, dAX, dAY, tau, j, N);		
 	}
 
@@ -116,9 +116,6 @@ int comparisonGPUAndCPU() {
 
 	cudaMemcpy(hX, dX, mem_size_big, cudaMemcpyDeviceToHost);
 	cudaMemcpy(hY, dY, mem_size_big, cudaMemcpyDeviceToHost);
-
-
-	
 	
 
 	for (int i = 0; i < N; i++)
